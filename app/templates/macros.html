@@ -1,0 +1,33 @@
+{% macro render_auth_messages(form) %}
+    {% with errors = get_flashed_messages(category_filter=['error']) %}
+        {% for message in errors %}
+            <div class="alert alert-danger col-8 col-lg-4 offset-2 offset-lg-4">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    {% for message in form.email.errors %}
+        <div class="alert alert-danger col-8 col-lg-4 offset-2 offset-lg-4">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in form.password.errors %}
+        <div class="alert alert-danger col-8 col-lg-4 offset-2 offset-lg-4">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% with infos = get_flashed_messages(category_filter=['info']) %}
+        {% for message in infos %}
+            <div class="alert alert-info col-8 col-lg-4 offset-2 offset-lg-4">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+{% endmacro %}
