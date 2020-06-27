@@ -5,7 +5,7 @@ from flask import (
     request,
     url_for,
 )
-from flask_login import login_user
+from flask_login import login_user, logout_user
 
 from app import db
 from app.models import User
@@ -27,3 +27,9 @@ def login():
         flash("Неверные электропочта или пароль", 'error')
 
     return render_template('login.html', form=form)
+
+
+@auth.route('/logout/', methods=('GET', ))
+def logout():
+    logout_user()
+    return redirect(url_for('main.index'))

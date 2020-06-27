@@ -21,12 +21,12 @@
                         <p class="h5 font-weight-light">Войдите, чтобы управлять</p>
                     </div>
                     <div class="mt-5 form-label-group">
-                        {{ form.email.label(class_="text-muted") }}
+                        <p class="text-muted">{{ form.email.label.text }}</p>
                         {{ form.email(class_="form-control", autofocus=True) }}
                         <label for="{{ form.email.id }}"></label>
                     </div>
                     <div class="form-label-group">
-                        {{ form.password.label(class_="text-muted") }}
+                        <p class="text-muted">{{ form.password.label.text }}</p>
                         {{ form.password(class_="form-control") }}
                         <label for="{{ form.password.id }}"></label>
                     </div>
