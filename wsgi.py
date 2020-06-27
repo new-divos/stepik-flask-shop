@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import getpass
+import logging
 import os
+import re
 
 from flask.cli import FlaskGroup
 
@@ -28,6 +31,43 @@ def make_shell_context():
         db=db,
         User=User,
     )
+
+
+# Команда для создания суперпользователя
+@app.cli.command('create-superuser')
+def create_superuser():
+    superuser = db.session.query(User).filter(User.is_superuser).first()
+    if superuser is None:
+        email = input("Enter the superuser email: ")
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            logging.error(f"Illegal email {email} for the superuser")
+            return
+
+        try:
+            password = getpass.getpass(
+                prompt="Enter the superuser password: "
+            )
+
+        except Exception as e:
+            logging.error(f"The superuser password cannot be retrieved {e}")
+            return
+
+        else:
+            if not password:
+                logging.error("The superuser password cannot be empty")
+                return
+
+        # noinspection PyArgumentList
+        superuser = User(email=email, is_superuser=True)
+        superuser.password = password
+
+        db.session.add(superuser)
+        db.session.commit()
+
+        logging.info("The superuser successfully created")
+
+    else:
+        logging.error("The superuser is already exist")
 
 
 if __name__ == '__main__':
