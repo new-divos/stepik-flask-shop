@@ -1,0 +1,18 @@
+name: stepik-flask-shop
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - flask=1.1
+  - pip
+  - pip:
+      - flask-bootstrap4
+      - flask-migrate
+      - flask-sqlalchemy
+      - flask-wtf
+      - flask-login
+      - flask-paginate
+      - psycopg2-binary
+      - gunicorn
+      - xlrd
