@@ -10,6 +10,11 @@ from flask.cli import FlaskGroup
 from app import create_app, db
 from app.config import config
 from app.models import (
+    Category,
+    Meal,
+    OrderStatus,
+    Order,
+    OrderPosition,
     User,
 )
 
@@ -29,6 +34,11 @@ def make_shell_context():
     return dict(
         app=app,
         db=db,
+        Category=Category,
+        Meal=Meal,
+        OrderStatus=OrderStatus,
+        Order=Order,
+        OrderPosition=OrderPosition,
         User=User,
     )
 

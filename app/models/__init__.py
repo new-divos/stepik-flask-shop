@@ -1,6 +1,11 @@
 from app import db, login_manager
-from app.models.auth import (
-    User,
+from app.models.auth import User  # noqa
+from app.models.main import (
+    Category,
+    Meal,
+    OrderStatus,
+    Order,
+    OrderPosition,
 )  # noqa
 
 
