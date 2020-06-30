@@ -70,7 +70,6 @@ class Order(db.Model):
         'User',
         uselist=False,
         back_populates='orders',
-        lazy='dynamic'
     )
     positions = db.relationship(
         'OrderPosition',
