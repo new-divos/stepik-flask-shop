@@ -1,5 +1,6 @@
 from enum import Enum
 
+from flask import url_for
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from sqlalchemy.sql.functions import now
 
@@ -41,6 +42,14 @@ class Meal(db.Model):
         cascade='all,delete',
         lazy='dynamic'
     )
+
+    @hybrid_method
+    def picture_url(self):
+        return url_for(
+            'static',
+            filename=f"images/{self.picture}",
+            _external=True
+        )
 
 
 class OrderStatus(Enum):
