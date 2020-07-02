@@ -5,8 +5,10 @@ from flask import (
     current_app,
     flash,
     redirect,
+    request,
     render_template,
     send_from_directory,
+    session,
     url_for,
 )
 from sqlalchemy.sql.expression import func
@@ -68,6 +70,34 @@ def render_category(id):
     ).order_by(Meal.title)
 
     return render_template('category.html', **kwargs)
+
+
+@main.route('/addtocart/<int:id>/<int:amount>')
+def add_to_cart(id, amount):
+    cart, _ = prepare()
+
+    # Если требуемое количество неположительно, то выдать ошибку 404
+    if amount <= 0:
+        abort(404)
+
+    # Выполнить поиск требуемого блюда
+    meal = db.session.query(Meal).get_or_404(id)
+
+    # Добавить блюдо в карзину
+    cart.append(
+        dict(
+            id=meal.id,
+            title=meal.title,
+            price=meal.price,
+            amount=amount
+        )
+    )
+
+    # Записать результат в сессию
+    session['cart'] = cart
+
+    # Переход на предыдущую страницу
+    return redirect(request.referrer or url_for('main.index'))
 
 
 @main.route('/static/<path:filename>')
