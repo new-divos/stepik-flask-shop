@@ -11,24 +11,8 @@
         {{ macros.render_advertising() }}
         {% for category, meals in categorized.items() %}
             <section>
-                <a href="#" class="h3 my-4" style="text-decoration: none !important;">{{ category.title }}</a>
-                <div class="row mt-4">
-                    {% for meal in meals %}
-                        <div class="col-12 col-md-4 d-flex align-items-stretch">
-                            <div class="card mb-3">
-                                <img src="{{ meal.picture_url() }}" width="300" height="200" class="card-img-top" alt="{{ meal.title }}">
-                                <div class="card-body">
-                                    <h4 class="h5 card-title">{{ meal.title }}</h4>
-                                    <p class="card-text">{{ meal.description }}</p>
-                                </div>
-                                <div class="card-footer bg-transparent font-weight-bold d-flex justify-content-between align-items-baseline">
-                                    <span>{{ meal.price|rubles|safe }}</span>
-                                    <span><a href="#" class="btn btn-danger">В корзину</a></span>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                <a href="{{ url_for('main.render_category', id=category.id) }}" class="h3 my-4" style="text-decoration: none !important;">{{ category.title }}</a>
+                {{ macros.render_meals(meals) }}
             </section>
         {% endfor %}
     </main>

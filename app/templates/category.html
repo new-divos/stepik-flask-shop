@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/styles.css', _external=True) }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <main class="container mt-3">
+        {{ macros.render_advertising() }}
+        <section>
+            <h3 class="my-4">{{ category.title }}</h3>
+            {{ macros.render_meals(meals) }}
+        </section>
+    </main>
+{% endblock %}

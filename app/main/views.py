@@ -7,7 +7,6 @@ from flask import (
     redirect,
     render_template,
     send_from_directory,
-    session,
     url_for,
 )
 from sqlalchemy.sql.expression import func
@@ -18,6 +17,7 @@ from app.models import (
     Category,
     Meal,
 )
+from app.toolkit import prepare
 
 
 # Ключ словаря с группированными по категорям данными
@@ -27,14 +27,7 @@ CategoryKey = namedtuple('CategoryItem', ('id', 'title'))
 @main.route('/')
 @main.route('/index/')
 def index():
-    # Словарь данных шаблона
-    kwargs = dict()
-
-    # Получить корзину из объекта сессии
-    cart = session.get('cart', [])
-    kwargs['cart'] = cart
-    if 'cart' not in session:
-        session['cart'] = cart
+    _, kwargs = prepare()
 
     # Построить словарь с разделением по категориям
     categorized = OrderedDict()
@@ -60,6 +53,21 @@ def index():
         kwargs['categorized'] = categorized
 
     return render_template('main.html', **kwargs)
+
+
+@main.route('/category/<int:id>')
+def render_category(id):
+    _, kwargs = prepare()
+
+    # Получить категорию по индексу
+    kwargs['category'] = db.session.query(Category).get_or_404(id)
+
+    # Получить отсортированный список блюд данной категории
+    kwargs['meals'] = db.session.query(Meal).filter(
+        Meal.category_id == id
+    ).order_by(Meal.title)
+
+    return render_template('category.html', **kwargs)
 
 
 @main.route('/static/<path:filename>')

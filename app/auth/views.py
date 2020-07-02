@@ -3,7 +3,6 @@ from flask import (
     redirect,
     render_template,
     request,
-    session,
     url_for,
 )
 from flask_login import login_user, logout_user
@@ -12,18 +11,12 @@ from app import db
 from app.models import User
 from app.auth import auth
 from app.auth.forms import LoginForm, RegistrationForm
+from app.toolkit import prepare
 
 
 @auth.route('/login/', methods=('GET', 'POST'))
 def login():
-    # Словарь данных шаблона
-    kwargs = dict()
-
-    # Получить корзину из объекта сессии
-    cart = session.get('cart', [])
-    kwargs['cart'] = cart
-    if 'cart' not in session:
-        session['cart'] = cart
+    _, kwargs = prepare()
 
     # Создать форму для входа
     form = LoginForm()
@@ -52,14 +45,7 @@ def logout():
 
 @auth.route('/register/', methods=('GET', 'POST'))
 def register():
-    # Словарь данных шаблона
-    kwargs = dict()
-
-    # Получить корзину из объекта сессии
-    cart = session.get('cart', [])
-    kwargs['cart'] = cart
-    if 'cart' not in session:
-        session['cart'] = cart
+    _, kwargs = prepare()
 
     # Создать форму для регистрации
     form = RegistrationForm()
