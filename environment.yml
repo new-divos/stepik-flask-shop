@@ -14,6 +14,7 @@ dependencies:
       - flask-login
       - flask-paginate
       - gunicorn
+      - phonenumbers
       - psycopg2-binary
       - wtforms[email]
       - xlrd
