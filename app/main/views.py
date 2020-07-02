@@ -15,6 +15,7 @@ from sqlalchemy.sql.expression import func
 
 from app import db
 from app.main import main
+from app.main.forms import OrderForm
 from app.models import (
     Category,
     Meal,
@@ -98,6 +99,17 @@ def add_to_cart(id, amount):
 
     # Переход на предыдущую страницу
     return redirect(request.referrer or url_for('main.index'))
+
+
+@main.route('/cart/')
+def render_cart():
+    cart, kwargs = prepare()
+
+    form = OrderForm()
+
+    kwargs['form'] = form
+
+    return render_template('cart.html', **kwargs)
 
 
 @main.route('/static/<path:filename>')

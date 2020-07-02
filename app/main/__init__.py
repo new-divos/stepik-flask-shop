@@ -4,4 +4,4 @@ from flask import Blueprint
 main = Blueprint('main', __name__)
 
 
-from . import filters, views  # noqa
+from . import filters, forms, views  # noqa

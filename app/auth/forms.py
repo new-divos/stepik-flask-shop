@@ -10,7 +10,17 @@ class LoginForm(FlaskForm):
     email = StringField(
         "Электропочта",
         id='inputEmail',
-        validators=[InputRequired(), Length(1, 64), Email()]
+        validators=[
+            InputRequired(),
+            Length(
+                1,
+                64,
+                message="Длина электропочты должна быть от 1 до 64 символа"
+            ),
+            Email(
+                message="Неверный формат электропочты"
+            )
+        ]
     )
     password = PasswordField(
         "Пароль",
@@ -24,7 +34,16 @@ class RegistrationForm(FlaskForm):
     email = StringField(
         "Электропочта",
         id='inputEmail',
-        validators=[InputRequired(), Length(1, 64), Email()]
+        validators=[
+            InputRequired(),
+            Length(
+                1,
+                64,
+                message="Длина электропочты должна быть от 1 до 64 символа"
+            ),
+            Email(
+                message="Неверный формат электропочты"
+            )]
     )
     password = PasswordField(
         "Пароль",
