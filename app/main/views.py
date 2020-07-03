@@ -1,5 +1,6 @@
 import base64
 from collections import OrderedDict, namedtuple
+from datetime import datetime
 import json
 import zlib
 
@@ -135,6 +136,7 @@ def render_cart():
     if form.validate_on_submit():
         # Создать объект заказа
         order = Order(
+            date=datetime.now(),
             total=float(form.order_total.data),
             name=form.name.data,
             address=form.address.data,

@@ -6,10 +6,11 @@ from flask import (
     session,
     url_for,
 )
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user, login_required
+from flask_paginate import Pagination, get_page_parameter
 
 from app import db
-from app.models import User
+from app.models import User, Order
 from app.auth import auth
 from app.auth.forms import LoginForm, RegistrationForm
 from app.utils import prepare
@@ -68,3 +69,32 @@ def register():
     kwargs['form'] = form
 
     return render_template('register.html', **kwargs)
+
+
+@auth.route('/account/', methods=('GET', ))
+@login_required
+def render_account():
+    _, kwargs = prepare()
+
+    # Получить число заказов на странице
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    offset = page - 1
+
+    # Выбрать все заказы для текущего пользователя
+    orders = db.session.query(Order).filter(
+        Order.user_id == current_user.id
+    ).order_by(Order.date.desc()).all()
+    kwargs['orders'] = orders[offset:offset + 1]
+
+    # Получить пажинатор
+    pagination = Pagination(
+        page=page,
+        total=len(orders),
+        per_page=1,
+        offset=offset,
+        record_name='orders',
+        bs_version=4
+    )
+    kwargs['pagination'] = pagination
+
+    return render_template('account.html', **kwargs)

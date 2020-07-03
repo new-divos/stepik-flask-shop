@@ -1,8 +1,23 @@
 import base64
+from datetime import datetime
 import json
 import zlib
 
 from app.main import main
+
+months = (
+    "Января",
+    "Февраля",
+    "Марта",
+    "Апреля",
+    "Мая",
+    "Июня",
+    "Июля",
+    "Августа",
+    "Сентября",
+    "Ноября",
+    "Декабря"
+)
 
 
 @main.app_template_filter('rubles')
@@ -39,3 +54,15 @@ def _jinja2_filter_compress(cart: list):
     return base64.b64encode(
         zlib.compress(data.encode('UTF-8'))
     ).decode('UTF-8')
+
+
+@main.app_template_filter('format_date')
+def _jinja2_filter_date_fmt(date: datetime):
+    global months
+    return "{} {} {} г. {}:{}".format(
+        date.day,
+        months[date.month - 1],
+        date.year,
+        date.hour,
+        date.minute
+    )
