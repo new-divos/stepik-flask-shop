@@ -113,3 +113,15 @@
         {% endfor %}
     {% endwith %}
 {% endmacro %}
+
+
+{% macro render_footer() %}
+    <footer class="footer">
+        <nav class="container navbar navbar-light bg-light">
+            <ul class="navbar-nav mr-auto">
+                <a href="{{ url_for('main.index') }}" class="h4 nav-link">Stepik Delivery</a>
+            </ul>
+            <a class="text-muted" href="mailto:roman.voronkin@gmail.com">Roman Voronkin 2020</a>
+        </nav>
+    </footer>
+{% endmacro %}

@@ -20,7 +20,7 @@ from app.models import (
     Category,
     Meal,
 )
-from app.toolkit import prepare
+from app.utils import prepare, save_path
 
 
 # Ключ словаря с группированными по категорям данными
@@ -29,6 +29,7 @@ CategoryKey = namedtuple('CategoryItem', ('id', 'title'))
 
 @main.route('/')
 @main.route('/index/')
+@save_path
 def index():
     _, kwargs = prepare()
 
@@ -59,6 +60,7 @@ def index():
 
 
 @main.route('/category/<int:id>')
+@save_path
 def render_category(id):
     _, kwargs = prepare()
 
@@ -81,10 +83,10 @@ def add_to_cart(id, amount):
     if amount <= 0:
         abort(404)
 
-    # Выполнить поиск требуемого блюда
+    # Выполнить поиск требуемого блюда в БД
     meal = db.session.query(Meal).get_or_404(id)
 
-    # Добавить блюдо в карзину
+    # Добавить блюдо в корзину
     cart.append(
         dict(
             id=meal.id,
@@ -102,6 +104,7 @@ def add_to_cart(id, amount):
 
 
 @main.route('/cart/')
+@save_path
 def render_cart():
     cart, kwargs = prepare()
 

@@ -1,3 +1,7 @@
+import base64
+import json
+import zlib
+
 from app.main import main
 
 
@@ -27,3 +31,11 @@ def _jinja2_filter_dishes(value: int):
         name = "блюд"
 
     return f"{value} {name}"
+
+
+@main.app_template_filter('compress')
+def _jinja2_filter_compress(cart: list):
+    data = json.dumps([(item['id'], item.get('amount', 0)) for item in cart])
+    return base64.b64encode(
+        zlib.compress(data.encode('UTF-8'))
+    ).decode('UTF-8')

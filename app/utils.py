@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import abort, session
+from flask import abort, request, session
 from flask_login import current_user
 
 
@@ -14,6 +14,20 @@ def superuser_required(f):
     def decorated_function(*args, **kwargs):
         if not current_user.is_superuser:
             abort(403)
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def save_path(f):
+    """
+    Сохраняет текущий путь к странице в сессии
+    :param f: обертываемая функция роута
+    :return: функция роута после обертки
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        session['next_url'] = request.path
         return f(*args, **kwargs)
 
     return decorated_function
