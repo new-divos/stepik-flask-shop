@@ -109,6 +109,21 @@ def add_to_cart(id, amount):
     return redirect(request.referrer or url_for('main.index'))
 
 
+@main.route('/removefromcart/<int:position>/')
+def remove_from_cart(position):
+    cart, _ = prepare()
+
+    if position <= 0 or position > len(cart):
+        abort(404)
+
+    del cart[position - 1]
+    session['cart'] = cart
+
+    flash("Блюдо удалено из корзины", 'warning')
+
+    return redirect(url_for('main.render_cart'))
+
+
 @main.route('/cart/', methods=('GET', 'POST'))
 @save_path
 def render_cart():

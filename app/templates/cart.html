@@ -68,7 +68,7 @@
                                 <td class="text-right">{{ item.price|rubles|safe }}</td>
                                 <td class="text-right">{{ item.amount }}</td>
                                 <td class="text-right">{{ (item.price * item.amount)|rubles|safe }}</td>
-                                <td><a class="text-danger text-center" href="#">Удалить</a></td>
+                                <td><a class="text-danger text-center" href="{{ url_for('main.remove_from_cart', position=loop.index) }}">Удалить</a></td>
                             </tr>
                         {% endfor %}
                         <tr>
