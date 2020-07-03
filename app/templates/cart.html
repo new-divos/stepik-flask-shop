@@ -20,7 +20,8 @@
             <div class="col-4">
                 <form action="{{ url_for('main.render_cart') }}" method="POST">
                     {{ form.csrf_token(class_="form-control") }}
-                    {{ form.cart(class_="form-control", value=cart|compress) }}
+                    {{ form.order_cart(class_="form-control", value=cart|compress) }}
+                    {{ form.order_total(class_="form-control", value=cart|total|string) }}
                     <h4 class="">Ваши данные</h4>
                     <div class=" md-4 order-md-1">
                         <div class="mt-3 mb-3">
@@ -38,9 +39,9 @@
                         <div class="mt-3 mb-3">
                             {{ form.email.label }}
                             {% if current_user.is_authenticated %}
-                                {{ form.address(class_="font-weight-bold form-control", value=current_user.email, autofocus=True) }}
+                                {{ form.email(class_="font-weight-bold form-control", value=current_user.email, autofocus=True) }}
                             {% else %}
-                                {{ form.address(class_="font-weight-bold form-control", autofocus=True) }}
+                                {{ form.email(class_="font-weight-bold form-control", autofocus=True) }}
                             {% endif %}
                         </div>
                     </div>

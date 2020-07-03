@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 import phonenumbers
 from wtforms import HiddenField, StringField, SubmitField, ValidationError
-from wtforms.validators import InputRequired, Email, Length
+from wtforms.validators import DataRequired, Email, Length
 
 
 class OrderForm(FlaskForm):
@@ -9,7 +9,9 @@ class OrderForm(FlaskForm):
         "Ваше имя",
         id='inputName',
         validators=[
-            InputRequired(),
+            DataRequired(
+                message="Не задано имя"
+            ),
             Length(
                 1,
                 120,
@@ -21,7 +23,9 @@ class OrderForm(FlaskForm):
         "Адрес",
         id='inputAddress',
         validators=[
-            InputRequired(),
+            DataRequired(
+                message="Не задан адрес"
+            ),
             Length(
                 1,
                 200,
@@ -33,7 +37,9 @@ class OrderForm(FlaskForm):
         "Электропочта",
         id='inputEmail',
         validators=[
-            InputRequired(),
+            DataRequired(
+                message="Не задана электропочта"
+            ),
             Length(
                 1,
                 80,
@@ -48,7 +54,9 @@ class OrderForm(FlaskForm):
         "Телефон",
         id="inputPhone",
         validators=[
-            InputRequired(),
+            DataRequired(
+                message="Не задан телефон"
+            ),
             Length(
                 1,
                 20,
@@ -56,10 +64,15 @@ class OrderForm(FlaskForm):
             )
         ]
     )
-    cart = HiddenField(
+    order_cart = HiddenField(
         "Корзина",
-        id='cart',
-        validators=[InputRequired()],
+        id='order_cart',
+        validators=[DataRequired()],
+    )
+    order_total = HiddenField(
+        "Итого",
+        id='order_total',
+        validators=[DataRequired()],
     )
     submit = SubmitField("Оформить заказ")
 
