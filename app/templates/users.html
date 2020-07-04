@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block title %}Admin | {{ super() }}{% endblock %}
+
+{% block content %}
+    <main class="container">
+        <div class="mt-1">
+            {% with warnings = get_flashed_messages(category_filter=['warning']) %}
+                {% for message in warnings %}
+                    <div class="alert alert-warning">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endwith %}
+        </div>
+        <div class="col-12 col-lg-10">
+            <h1 class="h3 my-5">Администрирование. Пользователи</h1>
+            {{ pagination.links }}
+            <table class="table">
+                <tr>
+                    <th>#</th>
+                    <th>Электропочта</th>
+                    <th>Администратор</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                </tr>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ loop.index + pagination.skip }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.is_superuser %}
+                                <span class="text-danger">Да</span>
+                            {% else %}
+                                <span class="text-info">Нет</span>
+                            {% endif %}
+                        </td>
+                        <td><a href="{{ url_for('admin.change_password', id=user.id) }}">Изменить пароль</a></td>
+                        <td>
+                            {% if user.id != current_user.id %}
+                                {% if user.is_superuser %}
+                                    <a href="{{ url_for('admin.revoke_user', id=user.id) }}">Понизить права</a>
+                                {% else %}
+                                    <a href="{{ url_for('admin.grant_user', id=user.id) }}">Повысить права</a>
+                                {% endif %}
+                            {% else %}
+                                &nbsp;
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.id != current_user.id %}
+                                <a href="{{ url_for('admin.remove_user', id=user.id) }}">Удалить</a>
+                            {% else %}
+                                &nbsp;
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {{ pagination.links }}
+        </div>
+    </main>
+    {{ macros.render_footer() }}
+{% endblock %}

@@ -4,4 +4,4 @@ from flask import Blueprint
 admin = Blueprint('admin', __name__)
 
 
-from . import views  # noqa
+from . import forms, views  # noqa

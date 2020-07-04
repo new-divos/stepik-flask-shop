@@ -90,7 +90,7 @@ def render_account():
     ).order_by(Order.date.desc()).all()
     kwargs['orders'] = orders[offset:offset + per_page]
 
-    # Получить пажинатор
+    # Создать пажинатор
     pagination = Pagination(
         page=page,
         total=len(orders),
