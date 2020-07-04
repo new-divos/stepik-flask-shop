@@ -7,21 +7,18 @@
             </div>
         {% endfor %}
     {% endwith %}
-
     {% for message in form.email.errors %}
         <div class="alert alert-danger">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             {{ message }}
         </div>
     {% endfor %}
-
     {% for message in form.password.errors %}
         <div class="alert alert-danger">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             {{ message }}
         </div>
     {% endfor %}
-
     {% with infos = get_flashed_messages(category_filter=['info']) %}
         {% for message in infos %}
             <div class="alert alert-info">
@@ -75,35 +72,30 @@
             </div>
         {% endfor %}
     {% endwith %}
-
     {% for message in form.name.errors %}
         <div class="alert alert-danger">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             {{ message }}
         </div>
     {% endfor %}
-
     {% for message in form.address.errors %}
         <div class="alert alert-danger">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             {{ message }}
         </div>
     {% endfor %}
-
     {% for message in form.email.errors %}
         <div class="alert alert-danger">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             {{ message }}
         </div>
     {% endfor %}
-
     {% for message in form.phone.errors %}
         <div class="alert alert-danger">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             {{ message }}
         </div>
     {% endfor %}
-
     {% with warnings = get_flashed_messages(category_filter=['warning']) %}
         {% for message in warnings %}
             <div class="alert alert-warning">
@@ -124,4 +116,16 @@
             <a class="text-muted" href="mailto:roman.voronkin@gmail.com">Roman Voronkin 2020</a>
         </nav>
     </footer>
+{% endmacro %}
+
+
+{% macro render_warnings() %}
+    {% with warnings = get_flashed_messages(category_filter=['warning']) %}
+        {% for message in warnings %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
 {% endmacro %}

@@ -22,7 +22,7 @@ months = (
 
 @main.app_template_filter('rubles')
 def _jinja2_filter_rubles(value: float):
-    return f"{value:.2f} &#8381;"
+    return f"{value:.2f}&nbsp;&#8381;"
 
 
 @main.app_template_filter('total')
@@ -66,3 +66,8 @@ def _jinja2_filter_date_fmt(date: datetime):
         date.hour,
         date.minute
     )
+
+
+@main.app_template_filter('format_short_date')
+def _jinja2_filter_format_short_date(date: datetime):
+    return date.strftime("%Y-%m-%d %H:%M")

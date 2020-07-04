@@ -16,6 +16,8 @@ from app.admin.forms import ChangePasswordForm
 from app.models import (
     Category,
     Meal,
+    Order,
+    OrderStatus,
     User,
 )
 from app.utils import prepare, superuser_required
@@ -107,7 +109,7 @@ def render_users():
     offset = (page - 1) * per_page
 
     # Получить список пользователей
-    users = db.session.query(User).all()
+    users = db.session.query(User).order_by(User.email).all()
     kwargs['users'] = users[offset:offset + per_page]
 
     # Создать пажинатор
@@ -124,7 +126,7 @@ def render_users():
     return render_template('users.html', **kwargs)
 
 
-@admin.route('/users/remove/<int:id>/')
+@admin.route('/users/remove/<int:id>/', methods=('GET', ))
 @superuser_required
 def remove_user(id):
     # Нельзя удалить текущего пользователя
@@ -143,7 +145,7 @@ def remove_user(id):
     return redirect(url_for('admin.render_users'))
 
 
-@admin.route('/users/grant/<int:id>/')
+@admin.route('/users/grant/<int:id>/', methods=('GET', ))
 @superuser_required
 def grant_user(id):
     # Получить пользователя с заданным идентификатором
@@ -161,7 +163,7 @@ def grant_user(id):
     return redirect(url_for('admin.render_users'))
 
 
-@admin.route('/users/revoke/<int:id>/')
+@admin.route('/users/revoke/<int:id>/', methods=('GET', ))
 @superuser_required
 def revoke_user(id):
     # Получить пользователя с заданным идентификатором
@@ -200,3 +202,79 @@ def change_password(id):
 
     kwargs['form'] = form
     return render_template('change_password.html', **kwargs)
+
+
+@admin.route('/orders/', methods=('GET', ))
+@superuser_required
+def render_orders():
+    _, kwargs = prepare()
+
+    # Получить число заказов на странице
+    per_page = current_app.config['ADMIN_ROWS_PER_PAGE'] or 10
+
+    # Получить номер страницы
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    offset = (page - 1) * per_page
+    kwargs['page'] = page
+
+    # Получить список заказов
+    orders = db.session.query(Order).order_by(Order.date.desc()).all()
+    kwargs['orders'] = orders[offset:offset + per_page]
+
+    # Создать пажинатор
+    pagination = Pagination(
+        page=page,
+        total=len(orders),
+        per_page=per_page,
+        offset=offset,
+        record_name='orders',
+        bs_version=4
+    )
+    kwargs['pagination'] = pagination
+
+    return render_template('orders.html', **kwargs)
+
+
+@admin.route('/orders/remove/<int:id>', methods=('GET', ))
+@superuser_required
+def remove_order(id):
+    # Получить заказ с заданным идентификатором
+    order = db.session.query(Order).get_or_404(id)
+    date = order.date
+
+    # Удалить заказ
+    db.session.delete(order)
+    db.session.commit()
+
+    flash(
+        f"Заказ от {date.strftime('%Y-%m-%d %H:%M')} был удален",
+        'warning'
+    )
+    return redirect(url_for('admin.render_orders'))
+
+
+@admin.route('/orders/change-status/<int:id>/', methods=('GET', ))
+@superuser_required
+def change_status(id):
+    # Получить заказ с заданным идентификатором
+    order = db.session.query(Order).get_or_404(id)
+
+    # Получить номер страницы
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+
+    # Изменить статус заказа
+    if order.status == OrderStatus.CREATED:
+        order.status = OrderStatus.READY
+    elif order.status == OrderStatus.READY:
+        order.status = OrderStatus.DELIVERED
+    elif order.status == OrderStatus.DELIVERED:
+        order.status = OrderStatus.CREATED
+    else:
+        abort(404)
+    db.session.commit()
+
+    flash(
+        f"Статус заказа {order.date.strftime('%Y-%m-%d %H:%M')} был изменен",
+        'warning'
+    )
+    return redirect(url_for('admin.render_orders', page=page))

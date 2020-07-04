@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, ValidationError
-from wtforms.validators import InputRequired, EqualTo
+from wtforms import PasswordField, SubmitField
+from wtforms.validators import DataRequired, EqualTo
 
 
 class ChangePasswordForm(FlaskForm):
@@ -8,7 +8,7 @@ class ChangePasswordForm(FlaskForm):
         "Пароль",
         id='inputPassword',
         validators=[
-            InputRequired(),
+            DataRequired(),
             EqualTo(
                 'password2',
                 message="Пароли должны совпадать"
@@ -18,6 +18,6 @@ class ChangePasswordForm(FlaskForm):
     password2 = PasswordField(
         "Пароль еще раз",
         id='inputPassword2',
-        validators=[InputRequired()]
+        validators=[DataRequired()]
     )
     submit = SubmitField("Изменить пароль")

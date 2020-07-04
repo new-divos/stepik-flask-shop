@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block title %}Admin | {{ super() }}{% endblock %}
+
+{% block content %}
+    <main class="container">
+        <div class="mt-1">
+            {{ macros.render_warnings() }}
+        </div>
+        <div class="col-12">
+            <h1 class="h3 my-5">Администрирование. Заказы</h1>
+            {{ pagination.links }}
+            <table class="table">
+                <tr>
+                    <th>#</th>
+                    <th>Дата</th>
+                    <th>Имя</th>
+                    <th>Адрес</th>
+                    <th>Электропочта</th>
+                    <th>Телефон</th>
+                    <th>Сумма</th>
+                    <th>Статус</th>
+                    <th>&nbsp;</th>
+                </tr>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ loop.index + pagination.skip }}</td>
+                        <td>{{ order.date|format_short_date }}</td>
+                        <td>{{ order.name }}</td>
+                        <td>{{ order.address }}</td>
+                        <td>{{ order.email }}</td>
+                        <td>{{ order.phone }}</td>
+                        <td>{{ order.total|rubles|safe }}</td>
+                        <td><a href="{{ url_for('admin.change_status', id=order.id, page=page) }}">{{ order.status.value|lower }}</a></td>
+                        <td><a href="{{ url_for('admin.remove_order', id=order.id) }}">Удалить</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {{ pagination.links }}
+        </div>
+    </main>
+    {{ macros.render_footer() }}
+{% endblock %}
