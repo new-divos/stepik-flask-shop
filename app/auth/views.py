@@ -1,4 +1,5 @@
 from flask import (
+    current_app,
     flash,
     redirect,
     render_template,
@@ -77,20 +78,23 @@ def render_account():
     _, kwargs = prepare()
 
     # Получить число заказов на странице
+    per_page = current_app.config['ORDERS_PER_PAGE'] or 1
+
+    # Получить число заказов на странице
     page = request.args.get(get_page_parameter(), type=int, default=1)
-    offset = page - 1
+    offset = (page - 1) * per_page
 
     # Выбрать все заказы для текущего пользователя
     orders = db.session.query(Order).filter(
         Order.user_id == current_user.id
     ).order_by(Order.date.desc()).all()
-    kwargs['orders'] = orders[offset:offset + 1]
+    kwargs['orders'] = orders[offset:offset + per_page]
 
     # Получить пажинатор
     pagination = Pagination(
         page=page,
         total=len(orders),
-        per_page=1,
+        per_page=per_page,
         offset=offset,
         record_name='orders',
         bs_version=4

@@ -14,6 +14,7 @@ class Config:
         'DATABASE_URL',
         f"sqlite:///{Path(__file__).parent.parent / 'data.db'}"
     )
+    ORDERS_PER_PAGE = int(os.getenv('ORDERS_PER_PAGE', '1'))
 
     @classmethod
     def init_app(cls, app):
