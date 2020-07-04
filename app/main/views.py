@@ -82,7 +82,7 @@ def render_category(id):
     return render_template('category.html', **kwargs)
 
 
-@main.route('/addtocart/<int:id>/<int:amount>/', methods=('GET', ))
+@main.route('/cart/add/<int:id>/<int:amount>/', methods=('GET', ))
 def add_to_cart(id, amount):
     cart, _ = prepare()
 
@@ -110,7 +110,7 @@ def add_to_cart(id, amount):
     return redirect(request.referrer or url_for('main.index'))
 
 
-@main.route('/removefromcart/<int:position>/')
+@main.route('/cart/remove/<int:position>/')
 def remove_from_cart(position):
     cart, _ = prepare()
 
