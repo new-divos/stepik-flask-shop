@@ -54,8 +54,14 @@ def create_superuser():
             return
 
         try:
+            # Ввод пароля суперпользователя
             password = getpass.getpass(
                 prompt="Enter the superuser password: "
+            )
+
+            # Повторный ввод пароля суперпользователя
+            password2 = getpass.getpass(
+                prompt="Enter the superuser password again: "
             )
 
         except Exception as e:
@@ -63,9 +69,13 @@ def create_superuser():
             return
 
         else:
-            if not password:
+            if not password or not password2:
                 logging.error("The superuser password cannot be empty")
                 return
+
+        if password != password2:
+            logging.error("The entered passwords are mismatch")
+            return
 
         # noinspection PyArgumentList
         superuser = User(email=email, is_superuser=True)
