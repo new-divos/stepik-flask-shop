@@ -23,6 +23,11 @@
                     <ul class="nav navbar-nav">
                         {% if current_user.is_authenticated %}
                             <a href="{{ url_for('auth.render_account') }}" class="dropdown-item">Личный кабинет</a>
+                            {% if current_user.is_superuser %}
+                                <div class="dropdown-divider"></div>
+                                <a href="{{ url_for('admin.render_categories') }}" class="dropdown-item">Категории</a>
+                                <a href="{{ url_for('admin.render_meals') }}" class="dropdown-item">Блюда</a>
+                            {% endif %}
                             <div class="dropdown-divider"></div>
                             <a href="{{ url_for('auth.logout') }}" class="dropdown-item">Выйти</a>
                         {% else %}

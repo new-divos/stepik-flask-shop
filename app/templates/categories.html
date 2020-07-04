@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block title %}Admin | {{ super() }}{% endblock %}
+
+{% block content %}
+    <main class="container">
+        <section class="row">
+            <div class="col-12 col-lg-10">
+                <h1 class="h3 my-5">Администрирование. Категории</h1>
+                {{ pagination.links }}
+                <table class="table">
+                    <tr>
+                        <th>#</th>
+                        <th class="w-50">Наименование</th>
+                        <th class="w-25">Количество блюд</th>
+                    </tr>
+                    {% for category in categories %}
+                        <tr>
+                            <td>{{ loop.index + pagination.skip }}</td>
+                            <td class="w-50"><a href="{{ url_for('admin.render_meals', category=category.id) }}">{{ category.title }}</a></td>
+                            <td class="w-25">{{ category.count_meals() }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {{ pagination.links }}
+            </div>
+        </section>
+    </main>
+    {{ macros.render_footer() }}
+{% endblock %}

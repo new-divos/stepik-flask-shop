@@ -20,6 +20,10 @@ class Category(db.Model):
         lazy='dynamic'
     )
 
+    @hybrid_method
+    def count_meals(self):
+        return len(tuple(self.meals))
+
 
 class Meal(db.Model):
     __tablename__ = 'meals'

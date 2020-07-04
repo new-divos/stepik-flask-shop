@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block title %}Admin | {{ super() }}{% endblock %}
+
+{% block content %}
+    <main class="container">
+        <section class="row">
+            <div class="col-12 col-lg-10">
+                <h1 class="h3 my-5">Администрирование. Блюда
+                    {% if category %}
+                        (категория: {{ category.title|lower }})
+                    {% endif %}
+                </h1>
+                {{ pagination.links }}
+                <table class="table">
+                    <tr>
+                        <th>#</th>
+                        <th style="width: 40%;">Наименование</th>
+                        <th>Цена</th>
+                        <th>Категория</th>
+                        <th>Файл картинки</th>
+                    </tr>
+                    {% for meal in meals %}
+                        <tr>
+                            <td>{{ loop.index + pagination.skip }}</td>
+                            <td style="width: 40%;">{{ meal.title }}</td>
+                            <td>{{ meal.price|rubles|safe }}</td>
+                            <td>{{ meal.category.title }}</td>
+                            <td><a href="{{ meal.picture_url() }}">{{ meal.picture }}</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {{ pagination.links }}
+            </div>
+        </section>
+    </main>
+    {{ macros.render_footer() }}
+{% endblock %}
