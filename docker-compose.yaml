@@ -1,0 +1,79 @@
+version: '3.7'
+
+services:
+  db:
+    image: new-divos/stepik-flask-shop/db
+    restart: always
+
+    build:
+      context: ./docker/db
+      dockerfile: Dockerfile
+
+    environment:
+      - POSTGRES_DB=shop
+      - POSTGRES_USER=shop
+      - POSTGRES_PASSWORD=shop
+
+    volumes:
+      - stepik_flask_shop_data:/var/lib/postgresql/data:Z
+
+    ports:
+      - "5432"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shop"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    image: new-divos/stepik-flask-shop/web
+    restart: always
+
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+
+    command: gunicorn -b 0.0.0.0:5000 wsgi:app --access-logfile -
+
+    environment:
+      - FLASK_APP=wsgi:app
+      - FLASK_ENV=production
+      - APP_STATIC_DIR=/usr/src/app/
+      - DATABASE_URL=postgresql+psycopg2://shop:shop@db:5432/shop
+    env_file:
+      - ./.env.prod
+
+    volumes:
+      - stepik_flask_shop_static:/home/flaskuser/data:Z
+
+    links:
+      - db
+
+    depends_on:
+      - db
+
+  nginx:
+    image: new-divos/stepik-flask-shop/nginx
+    restart: always
+
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+
+    volumes:
+      - stepik_flask_shop_static:/www:Z
+
+    ports:
+      - 8080:80
+
+    depends_on:
+      - web
+
+
+volumes:
+  stepik_flask_shop_data:
+    external: true
+
+  stepik_flask_shop_static:
+    external: true

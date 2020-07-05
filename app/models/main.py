@@ -51,8 +51,7 @@ class Meal(db.Model):
     def picture_url(self):
         return url_for(
             'static',
-            filename=f"images/{self.picture}",
-            _external=True
+            filename=f"images/{self.picture}"
         )
 
 
