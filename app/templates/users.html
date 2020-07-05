@@ -31,13 +31,13 @@
                                 <span class="text-info">Нет</span>
                             {% endif %}
                         </td>
-                        <td><a href="{{ url_for('admin.change_password', id=user.id) }}">Изменить пароль</a></td>
+                        <td><a href="{{ url_for('admin.change_password', id=user.id, page=page) }}">Изменить пароль</a></td>
                         <td>
                             {% if user.id != current_user.id %}
                                 {% if user.is_superuser %}
-                                    <a href="{{ url_for('admin.revoke_user', id=user.id) }}">Понизить права</a>
+                                    <a href="{{ url_for('admin.revoke_user', id=user.id, page=page) }}">Понизить пол</a>
                                 {% else %}
-                                    <a href="{{ url_for('admin.grant_user', id=user.id) }}">Повысить права</a>
+                                    <a href="{{ url_for('admin.grant_user', id=user.id, page=page) }}">Повысить права</a>
                                 {% endif %}
                             {% else %}
                                 &nbsp;

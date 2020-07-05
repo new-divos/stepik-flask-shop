@@ -36,10 +36,10 @@ def render_meals():
         category = None
     kwargs['category'] = category
 
-    # Получить число заказов на странице
+    # Получить число блюд на странице
     per_page = current_app.config['ADMIN_ROWS_PER_PAGE'] or 10
 
-    # Получить число блюд на странице
+    # Получить номер страницы и смещение
     page = request.args.get(get_page_parameter(), type=int, default=1)
     offset = (page - 1) * per_page
 
@@ -71,10 +71,10 @@ def render_meals():
 def render_categories():
     _, kwargs = prepare()
 
-    # Получить число заказов на странице
+    # Получить число категорий на странице
     per_page = current_app.config['ADMIN_ROWS_PER_PAGE'] or 10
 
-    # Получить число блюд на странице
+    # Получить номер страницы и смещение
     page = request.args.get(get_page_parameter(), type=int, default=1)
     offset = (page - 1) * per_page
 
@@ -101,12 +101,13 @@ def render_categories():
 def render_users():
     _, kwargs = prepare()
 
-    # Получить число заказов на странице
+    # Получить число пользователей на странице
     per_page = current_app.config['ADMIN_ROWS_PER_PAGE'] or 10
 
-    # Получить число блюд на странице
+    # Получить номер страницы и смещение
     page = request.args.get(get_page_parameter(), type=int, default=1)
     offset = (page - 1) * per_page
+    kwargs['page'] = page
 
     # Получить список пользователей
     users = db.session.query(User).order_by(User.email).all()
@@ -155,12 +156,17 @@ def grant_user(id):
     if user.is_superuser:
         abort(403)
 
+    # Получить номер страницы
+    kwargs = {
+        get_page_parameter(): request.args.get('page', type=int, default=1),
+    }
+
     # Установить права суперпользователя
     user.is_superuser = True
     db.session.commit()
 
     flash(f"Пользователь {user.email} был повышен в правах", 'warning')
-    return redirect(url_for('admin.render_users'))
+    return redirect(url_for('admin.render_users', **kwargs))
 
 
 @admin.route('/users/revoke/<int:id>/', methods=('GET', ))
@@ -174,12 +180,17 @@ def revoke_user(id):
     if not user.is_superuser or current_user.id == id:
         abort(403)
 
+    # Получить номер страницы
+    kwargs = {
+        get_page_parameter(): request.args.get('page', type=int, default=1),
+    }
+
     # Отозвать права суперпользователя
     user.is_superuser = False
     db.session.commit()
 
     flash(f"Пользователь {user.email} был понижен в правах", 'warning')
-    return redirect(url_for('admin.render_users'))
+    return redirect(url_for('admin.render_users', **kwargs))
 
 
 @admin.route('/users/change_pass/<int:id>/', methods=('GET', 'POST'))
@@ -197,8 +208,13 @@ def change_password(id):
         user.password = form.password.data
         db.session.commit()
 
+        # Получить номер страницы
+        kwargs = {
+            get_page_parameter(): request.args.get('page', type=int, default=1),
+        }
+
         flash(f"Пароль пользователя {user.email} был изменен", 'warning')
-        return redirect(url_for('admin.render_users'))
+        return redirect(url_for('admin.render_users', **kwargs))
 
     kwargs['form'] = form
     return render_template('change_password.html', **kwargs)
@@ -212,7 +228,7 @@ def render_orders():
     # Получить число заказов на странице
     per_page = current_app.config['ADMIN_ROWS_PER_PAGE'] or 10
 
-    # Получить номер страницы
+    # Получить номер страницы и смещение
     page = request.args.get(get_page_parameter(), type=int, default=1)
     offset = (page - 1) * per_page
     kwargs['page'] = page
@@ -260,7 +276,9 @@ def change_status(id):
     order = db.session.query(Order).get_or_404(id)
 
     # Получить номер страницы
-    page = request.args.get(get_page_parameter(), type=int, default=1)
+    kwargs = {
+        get_page_parameter(): request.args.get('page', type=int, default=1),
+    }
 
     # Изменить статус заказа
     if order.status == OrderStatus.CREATED:
@@ -277,4 +295,4 @@ def change_status(id):
         f"Статус заказа {order.date.strftime('%Y-%m-%d %H:%M')} был изменен",
         'warning'
     )
-    return redirect(url_for('admin.render_orders', page=page))
+    return redirect(url_for('admin.render_orders', **kwargs))
