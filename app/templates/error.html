@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block title %}Error | {{ super() }}{% endblock %}
+
+{% block content %}
+    <main class="container">
+        <h1 class="text-danger mt-5">{{ message }}</h1>
+    </main>
+    {{ macros.render_footer() }}
+{% endblock %}
